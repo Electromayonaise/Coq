@@ -1,0 +1,105 @@
+Basics: 
+
+-nat == int 
+-bool == boolean 
+-unit 
+-prod
+-prop == proposition 
+
+
+Inductive (Somewhat like objetcs, created by the user, behavior is defined by constructors):
+
+-list (linked lists)
+-option (optional values)
+-nat (defined differently)
+-bool (defined differently)
+
+Ex: Inductive day : Type :=
+| Monday
+| Tuesday
+| Wednesday 
+| Thursday 
+| Friday 
+| Saturday 
+| Sunday. 
+
+Definition next_weekday (d: day) : day :=
+match d with 
+| Monday=> Tuesday
+| Tuesday=> Wednesday
+| Wednesday=> Thursday
+| Thursday=> Friday
+| Friday=> Saturday
+| Saturday=> Sunday
+| Sunday=> Monday
+end.
+
+Logical operators
+
+Implication: ->
+Conjunction: /\
+Disjunction: \/
+Negation: ~
+Equality: =
+For all : forall
+Exists: exists
+biconditional: <->
+Asignation : =>
+
+Comments with : (* *)
+
+Compute (next_weekday friday). (* Should output Saturday*)
+
+Example test_next_weekday:
+    (next_weekday (next_weekday saturday)) = monday.    (* Should output true*)
+    Proof. 
+        (* Proof goes here*)
+        simpl. (* Simplifies the expression*)
+        reflexivity. (* Proves the equality*)
+    Qed. (* End of proof*)
+
+Check 3. (* Should output 3 : nat*)
+Check Monday (* Should output Monday : day*)
+Check 3=5. (* Should output 3=5 : Prop, doesn't check wether it's true or not, just stated the data type*)
+
+(* Semantically the same*)
+
+Theorem modus_ponens forall (P Q: prop ), P ->(P->Q) ->  Q. (* Used for theorems, A statement that has been proven to be true*)
+Proof.
+    intros P Q H H0. (* Introduces the variables*)
+    apply H0. (* Applies the hypothesis*)
+    exact H. (* Applies the hypothesis*)
+Qed.
+
+Check modus_ponens. (* Should output modus_ponens : forall P Q : Prop, P -> (P -> Q) -> Q*)
+Print modus_ponens. (* Should output modus_ponens = fun (P Q : Prop) (H : P) (H0 : P -> Q) => H0 H : forall P Q : Prop, P -> (P -> Q) -> Q*)
+
+Lemma excluded := forall p: prop, p \/ ~p.   (* Same as theorem but used for intermediate results, A true statement used in proving other true statements*)
+Proof.
+    firstorder. (* Applies the tactic, used intros *)
+    admit. (* Used to admit a proof, doesn't actually prove anything*)
+Qed.
+
+Lemma sum : forall n: nat, n= 0+n
+Proof 
+  intros n. 
+  simpl. 
+  reflexivity. 
+Qed. 
+
+Inductive P: Prop:= 
+|alice_studies_math : P.
+
+Inductive Q: Prop:=
+|alice_studies_eng.
+
+Theorem a: P ->(P \/ Q).
+firstorder. 
+Qed. 
+
+Theorem b : P ->(P \/ Q).
+intros H. 
+left.
+exact H. (* assumption can also be used *)
+Qed. 
+
